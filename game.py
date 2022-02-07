@@ -84,10 +84,14 @@ def ball_animation():
         isPaused = True
     
     if ball.colliderect(player):
-        ball_speed_x *= -1
+        if abs(ball.left - player.right) < 10:
+            ball_speed_x *= -1
+        else:
+            ball_speed_y *= -1
     
     if ball.colliderect(opponent):
-        ball_speed_x *= -1
+        if abs(ball.right - opponent.left) < 10:
+            ball_speed_x *= -1
 
 def player_animation():
     player.y += player_speed
