@@ -83,7 +83,10 @@ def ball_animation():
         stopTick = pygame.time.get_ticks()
         isPaused = True
     
-    if ball.colliderect(player) or ball.colliderect(opponent):
+    if ball.colliderect(player):
+        ball_speed_x *= -1
+    
+    if ball.colliderect(opponent):
         ball_speed_x *= -1
 
 def player_animation():
