@@ -1,6 +1,7 @@
 # Modules
 import pygame
 import sys
+import os
 import random
 import math
 
@@ -20,14 +21,20 @@ OPPONENT_SPEED = 7
 
 BG_COLOR = pygame.Color('grey12')
 LIGHT_GREY = (200, 200, 200)
+RED = (255, 40, 0)
 
 FONT_SIZE = 32
 GAME_FONT = pygame.font.Font("freesansbold.ttf", FONT_SIZE)
 PAUSE_FONT = pygame.font.Font("freesansbold.ttf", FONT_SIZE * 2)
 
+# Sprites
+player_sprite = pygame.image.load(os.path.join("assets", "player-sprite.png"))
+opponent_sprite = pygame.image.load(os.path.join("assets", "opponent-sprite.png"))
+ball_sprite = pygame.image.load(os.path.join("assets", "dream-ball.png"))
+
 # Sounds
-paddle_hit_sound = pygame.mixer.Sound("./sounds/paddle_hit.wav")
-game_over_sound = pygame.mixer.Sound("./sounds/game_over.wav")
+paddle_hit_sound = pygame.mixer.Sound(os.path.join("sounds", "paddle_hit.wav"))
+game_over_sound = pygame.mixer.Sound(os.path.join("sounds", "game_over.wav"))
 
 # Game variables
 scoreboard = {
@@ -41,9 +48,8 @@ currentTick = pygame.time.get_ticks()
 ## Functions
 def draw():
     screen.fill(BG_COLOR)
-    pygame.draw.rect(screen, LIGHT_GREY, player)
-    pygame.draw.rect(screen, LIGHT_GREY, opponent)
-    pygame.draw.ellipse(screen, LIGHT_GREY, ball.rect)
+    screen.blit(player.image, player.rect)
+    screen.blit(opponent.image, opponent.rect)
     pygame.draw.aaline(screen, LIGHT_GREY, (SCREEN_WIDTH / 2, 0), (SCREEN_WIDTH / 2, SCREEN_HEIGHT))
 
     player_score_text = GAME_FONT.render(str(scoreboard["player"]), False, LIGHT_GREY)
@@ -51,6 +57,8 @@ def draw():
 
     opponent_score_text = GAME_FONT.render(str(scoreboard["opponent"]), False, LIGHT_GREY)
     screen.blit(opponent_score_text, (SCREEN_WIDTH / 2 - opponent_score_text.get_width() / 2 + 40, SCREEN_HEIGHT / 2 - FONT_SIZE / 2))
+
+    screen.blit(ball.image, ball.rect)
 
     if isPaused:
         timer_text = math.ceil((3000 - (int(currentTick) - int(stopTick))) / 1000)
@@ -74,12 +82,13 @@ pygame.display.set_caption("Pong Game")
 ## Classes
 
 class Ball:
-    def __init__(self, scoreboard):
+    def __init__(self, image, scoreboard):
         self.rect = pygame.Rect(SCREEN_WIDTH / 2 - BALL_SIZE / 2, SCREEN_HEIGHT / 2 - BALL_SIZE / 2, BALL_SIZE, BALL_SIZE)
         self.speedX = 7 * random.choice([-1, 1])
         self.speedY = 7 * random.choice([-1, 1])
         self.scoreboard = scoreboard
         self.isPaused = isPaused
+        self.image = image
 
     def move(self):
         global isPaused, stopTick
@@ -120,8 +129,9 @@ class Ball:
         self.speedY *= random.choice([-1, 1])
 
 class Paddle:
-    def __init__(self, x, y, width, height):
+    def __init__(self, x, y, width, height, image):
         self.rect = pygame.Rect(x, y, width, height)
+        self.image = image
 
     def move(self):
         if self.rect.top <= 0:
@@ -130,8 +140,8 @@ class Paddle:
             self.rect.bottom = SCREEN_HEIGHT
 
 class Player(Paddle):
-    def __init__(self, x, y, width, height):
-        super().__init__(x, y, width, height)
+    def __init__(self, x, y, width, height, image):
+        super().__init__(x, y, width, height, image)
         self.speed = 0
     
     def move(self):
@@ -139,8 +149,8 @@ class Player(Paddle):
         super().move()
 
 class Opponent(Paddle):
-    def __init__(self, x, y, width, height):
-        super().__init__(x, y, width, height)
+    def __init__(self, x, y, width, height, image):
+        super().__init__(x, y, width, height, image)
         self.speed = 7
     
     def move(self):
@@ -151,9 +161,9 @@ class Opponent(Paddle):
         super().move()
 
 # Objects
-ball = Ball(scoreboard)
-player = Player(10 , SCREEN_HEIGHT / 2 - PLAYER_HEIGHT / 2, PLAYER_WIDTH, PLAYER_HEIGHT)
-opponent = Opponent(SCREEN_WIDTH - PLAYER_WIDTH - 10, SCREEN_HEIGHT / 2 - PLAYER_HEIGHT / 2, PLAYER_WIDTH, PLAYER_HEIGHT)
+ball = Ball(ball_sprite, scoreboard)
+player = Player(10 , SCREEN_HEIGHT / 2 - PLAYER_HEIGHT / 2, PLAYER_WIDTH, PLAYER_HEIGHT, player_sprite)
+opponent = Opponent(SCREEN_WIDTH - PLAYER_WIDTH - 10, SCREEN_HEIGHT / 2 - PLAYER_HEIGHT / 2, PLAYER_WIDTH, PLAYER_HEIGHT, opponent_sprite)
 
 # Game loop
 isRunning = True
