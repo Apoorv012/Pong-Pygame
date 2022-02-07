@@ -2,6 +2,7 @@
 import pygame
 import sys
 import random
+import math
 
 # setup
 pygame.init()
@@ -39,13 +40,13 @@ ball_speed_y = 7 * random.choice([-1, 1])
 player_speed = 0
 player_score = 0
 opponent_score = 0
-isPaused = False
-stopTick = None
-currentTick = None
+isPaused = True
+stopTick = pygame.time.get_ticks()
+currentTick = pygame.time.get_ticks()
 
 ## Functions
 def draw():
-    global SCREEN_WIDTH, SCREEN_HEIGHT
+    global SCREEN_WIDTH, SCREEN_HEIGHT, player_score, opponent_score, isPaused, stopTick, currentTick
 
     screen.fill(BG_COLOR)
     pygame.draw.rect(screen, LIGHT_GREY, player)
@@ -60,7 +61,8 @@ def draw():
     screen.blit(opponent_score_text, (SCREEN_WIDTH / 2 - opponent_score_text.get_width() / 2 + 40, SCREEN_HEIGHT / 2 - FONT_SIZE / 2))
 
     if isPaused:
-        pause_text = PAUSE_FONT.render("PAUSED", False, LIGHT_GREY)
+        timer_text = math.ceil((3000 - (int(currentTick) - int(stopTick))) / 1000)
+        pause_text = PAUSE_FONT.render(str(timer_text), False, LIGHT_GREY)
         screen.blit(pause_text, (SCREEN_WIDTH / 2 - pause_text.get_width() / 2, SCREEN_HEIGHT / 2 - FONT_SIZE / 2 - 100))
 
     pygame.display.update()
@@ -110,7 +112,7 @@ def ball_restart():
 def countdown_timer():
     global isPaused, stopTick, currentTick
     currentTick = pygame.time.get_ticks()
-    if currentTick - stopTick > 2000:
+    if currentTick - stopTick > 3000:
         ball_restart()
         isPaused = False
 
