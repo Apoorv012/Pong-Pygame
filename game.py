@@ -25,6 +25,10 @@ FONT_SIZE = 32
 GAME_FONT = pygame.font.Font("freesansbold.ttf", FONT_SIZE)
 PAUSE_FONT = pygame.font.Font("freesansbold.ttf", FONT_SIZE * 2)
 
+# Sounds
+paddle_hit_sound = pygame.mixer.Sound("./sounds/paddle_hit.wav")
+game_over_sound = pygame.mixer.Sound("./sounds/game_over.wav")
+
 # Game variables
 scoreboard = {
     "player": 0,
@@ -89,22 +93,26 @@ class Ball:
             self.scoreboard["opponent"] += 1
             stopTick = pygame.time.get_ticks()
             isPaused = True
+            game_over_sound.play()
         if self.rect.right >= SCREEN_WIDTH:
             self.scoreboard["player"] += 1
             stopTick = pygame.time.get_ticks()
             isPaused = True
+            game_over_sound.play()
         
         if self.rect.colliderect(player):
             if abs(self.rect.left - player.rect.right) < 10:
                 self.speedX *= -1
             else:
                 self.speedY *= -1
+            paddle_hit_sound.play()
         
         if self.rect.colliderect(opponent):
             if abs(self.rect.right - opponent.rect.left) < 10:
                 self.speedX *= -1
             else:
                 self.speedY *= -1
+            paddle_hit_sound.play()
     
     def restart(self):
         self.rect.center = (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
