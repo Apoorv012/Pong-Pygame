@@ -24,13 +24,14 @@ LIGHT_GREY = (200, 200, 200)
 RED = (255, 40, 0)
 
 FONT_SIZE = 32
-GAME_FONT = pygame.font.Font("freesansbold.ttf", FONT_SIZE)
-PAUSE_FONT = pygame.font.Font("freesansbold.ttf", FONT_SIZE * 2)
+GAME_FONT = pygame.font.Font(os.path.join("Fonts", "BRLNSDB.TTF"), FONT_SIZE)
+PAUSE_FONT = pygame.font.Font(os.path.join("Fonts", "BRLNSDB.TTF"), FONT_SIZE * 2)
 
 # Sprites
 player_sprite = pygame.image.load(os.path.join("assets", "player-sprite.png"))
 opponent_sprite = pygame.image.load(os.path.join("assets", "opponent-sprite.png"))
 ball_sprite = pygame.image.load(os.path.join("assets", "dream-ball.png"))
+game_logo = pygame.image.load(os.path.join("assets", "game-logo.png"))
 
 # Sounds
 paddle_hit_sound = pygame.mixer.Sound(os.path.join("sounds", "paddle_hit.wav"))
@@ -78,6 +79,7 @@ def countdown_timer():
 # Setting up the main window
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Pong Game")
+pygame.display.set_icon(game_logo)
 
 ## Classes
 
